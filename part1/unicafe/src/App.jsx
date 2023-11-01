@@ -34,7 +34,7 @@ const Statistics = ({good, neutral, bad}) => {
   else return (
   <div>
     <table>
-      <tbody>
+    <tbody>
       <StatisticLine text="good"  value ={good}/>
       <StatisticLine text="neutral" value ={neutral}/>
       <StatisticLine text="bad" value ={bad}/>
