@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import Persons from './Persons'
 import PersonForm from './PersonForm'
 import Filter from './Filter'
-import axios from 'axios'
 import dataService from './services/persons'
 
 
@@ -49,6 +48,19 @@ const App = () => {
     setNewName('')
     setNewNumber('')
   }
+  const handleDelete = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) 
+    {  dataService
+      .remove(person.id)
+      .then(() => {
+        setPersons(persons.filter(p => p.id !== person.id ))
+      })
+      .catch(() => {
+        alert(`'${person.name}' was already deleted from server`)
+      setPersons(persons.filter(p => p.id !== person.id ))
+      })
+    }
+  }
   return (
     <div>
       <h2>Phonebook</h2>
@@ -56,7 +68,7 @@ const App = () => {
       <h3>Add a new</h3>
       <PersonForm newName={newName} newNumber={newNumber} addName={addName} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} handleDelete={handleDelete} />
     </div>
   )
 }
