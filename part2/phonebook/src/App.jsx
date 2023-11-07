@@ -32,7 +32,9 @@ const App = () => {
     event.preventDefault()
     if (persons.find(person => person.name === newName))
     {
-      window.alert(`${newName} is already added to phonebook`)
+      const person = persons.find(person => person.name === newName)
+      const changedPerson = {...person, number: newNumber}
+      handleUpdate(changedPerson)
     } else {
       const nameObject = {
         name: newName,
@@ -48,6 +50,19 @@ const App = () => {
     setNewName('')
     setNewNumber('')
   }
+  const handleUpdate = (nameObject) => {
+    if (window.confirm(`${nameObject.name} is already added to
+     phonebook, replace the old number with a new one?`)) 
+    {  dataService
+        .update(nameObject.id, nameObject)
+        .then((returnedData) => {
+          setPersons(persons.map(person => person.id !== nameObject.id ? person : returnedData))
+        })
+  
+    }
+  }
+
+
   const handleDelete = (person) => {
     if (window.confirm(`Delete ${person.name}?`)) 
     {  dataService
