@@ -3,6 +3,8 @@ import Persons from './Persons'
 import PersonForm from './PersonForm'
 import Filter from './Filter'
 import dataService from './services/persons'
+import Notification from './Notification'
+import Error from './Error'
 
 
 const App = () => {
@@ -10,6 +12,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     dataService
@@ -47,6 +51,12 @@ const App = () => {
           setPersons(persons.concat(returnedData))
         })
     }
+    setNotificationMessage(
+      `Added ${newName} to phonebook`
+    )
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 5000)
     setNewName('')
     setNewNumber('')
   }
@@ -69,16 +79,30 @@ const App = () => {
       .remove(person.id)
       .then(() => {
         setPersons(persons.filter(p => p.id !== person.id ))
+        setNotificationMessage(
+          `Deleted ${person.name} from phonebook`
+        )
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
       })
       .catch(() => {
-        alert(`'${person.name}' was already deleted from server`)
+        setErrorMessage(
+          `'${person.name}' was already removed from server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       setPersons(persons.filter(p => p.id !== person.id ))
       })
     }
   }
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
+      <Error message={errorMessage} />
       <Filter handleFilterChange={handleFilterChange} />
       <h3>Add a new</h3>
       <PersonForm newName={newName} newNumber={newNumber} addName={addName} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
