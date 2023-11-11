@@ -17,8 +17,8 @@ function App() {
     if (search)
     {
       searchingAlgorithm()
+      countriesToShow()
     }
- 
 
   }
    const countryFound = (res) => {
@@ -32,15 +32,22 @@ function App() {
           <br />
           <b>languages:</b>
           <ul>
-          {languagesArray.map(([iso639_1, name]) => (
-          <li key={iso639_1}>{name}</li>
+          {languagesArray.map(([key, name]) => (
+          <li key={key}>{name}</li>
 				  ))}
 			    </ul>
-          <img width="200" alt={res.flags.alt} src={res.flags.png} />
+          <img width="150" alt={res.flags.alt} src={res.flags.png} />
+          <h2>Weather in {res.capital}</h2>
+          <a>temperature </a>
         </>
       )
     } 
-  const Display = ({display}) => {
+  const pressShow =  di  => {
+    console.log(di)
+    setSearch(di.name.common.toLowerCase());
+  }
+
+  const Display = ({ display, pressShow }) => {
     if (display.length == 1)
     {
       return (countryFound(display[0]))
@@ -48,24 +55,26 @@ function App() {
     else if (display.length < 10)
     {
       return (display.map((di, index) => 
-      <p key={index}>{di.name.common} <button onClick={null}>show</button></p>
+      <p key={index}>{di.name.common} <button onClick={() =>pressShow(di)}>show</button></p>
       ))
     }
     else if (search.length > 0)
      return (<p>Too many matches, specify another filter</p>)
   }
-  
+
+
+
   const searchingAlgorithm = () => {
     return countries.filter(country =>
           country.name.common.toLowerCase().includes(search))
   }
-  const countriesToShow = search ? searchingAlgorithm() : countries;
+  const countriesToShow = () => search ? searchingAlgorithm() : countries;
   return (
     <>
       <div>
-        find countries  <input value={search} onChange={handleSearchChange} />
+        find countries  <input onChange={handleSearchChange} />
       </div>
-      <Display display={countriesToShow}/>
+      <Display display={countriesToShow()} pressShow={pressShow} />
     </>
   )
 }
