@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import dataService from './services/countries'
 
+const api_key = import.meta.env.VITE_SOME_KEY
+ 
+
 function App() {
   const [search, setSearch] = useState('')
   const [countries, setCountries] = useState([])
