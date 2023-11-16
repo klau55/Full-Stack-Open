@@ -34,6 +34,10 @@ const generateId = () => {
     return maxId + 1
   }
   
+  app.get('/info', (req, res) => {
+  res.send(`<a>Phonebook has info for ${persons.length} people</a><br/>${new Date()}`)
+  })
+
   app.get('/api/persons', (req, res) => {
     res.json(persons)
   })
