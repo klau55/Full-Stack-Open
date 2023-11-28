@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 var morgan = require('morgan')
 const cors = require('cors')
-
+app.use(express.static('dist'))
 app.use(cors())
 app.use(express.json())
 morgan.token('res-body', (request) => JSON.stringify(request.body));
@@ -22,12 +22,12 @@ let persons =
     },
     { 
       "id": 3,
-      "name": "Dan Abramov", 
+      "name": "Klaus", 
       "number": "12-43-234345"
     },
     { 
       "id": 4,
-      "name": "Mary Poppendieck", 
+      "name": "Mary Poppendieck234", 
       "number": "39-23-6423122"
     }
 ]
@@ -48,7 +48,7 @@ const generateId = () => {
     const id = Number(req.params.id)
     persons = persons.filter(person => person.id !== id)
 
-    response.status(204).end()
+    res.status(204).end()
   })
 
   app.get('/api/persons/:id',(req, res) => {
@@ -60,10 +60,10 @@ const generateId = () => {
     else  
       res.status(404).end()
   })
-  app.post('/api/persons', (request, response) => {
-    const body = request.body
+  app.post('/api/persons', (req, res) => {
+    const body = req.body
     if (!body) {
-      return response.status(400).json({ 
+      return res.status(400).json({ 
         error: 'content missing' 
       })
     }
@@ -75,29 +75,29 @@ const generateId = () => {
     }
   
     persons = persons.concat(person)
-    response.json(person)
+    res.json(person)
   })
 
-  app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
+  app.get('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
     const person = persons.find(person => person.id === id)
   
     if (person) {
-      response.json(person)
+      res.json(person)
     } else {
-      response.status(404).end()
+      res.status(404).end()
     }
   
   })
   
-  app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
+  app.delete('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
     persons = persons.filter(person => person.id !== id)
   
-    response.status(204).end()
+    res.status(204).end()
   })
   
-  const PORT = 3001
+  const PORT = process.env.PORT || 3001
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   })
