@@ -8,6 +8,7 @@ app.use(express.json())
 morgan.token('res-body', (request) => JSON.stringify(request.body));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :res-body'))
 
+
 let persons = 
 [
     { 
@@ -68,6 +69,8 @@ const generateId = () => {
       })
     }
   
+
+    
     const person = {
       name: body.name,
       number: body.number,
