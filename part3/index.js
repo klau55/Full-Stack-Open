@@ -27,23 +27,6 @@ const generateId = () => {
     })
   })
 
-
-  app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(person => person.id !== id)
-
-    res.status(204).end()
-  })
-
-  app.get('/api/persons/:id',(req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if (person)
-      res.json(person)
-    else  
-      res.status(404).end()
-  })
   app.post('/api/persons', (req, res) => {
     const body = req.body
     if (!body) {
@@ -62,9 +45,18 @@ const generateId = () => {
     })
   })
 
-  app.get('/api/persons/:id', (req, res) => {
-    Person.findById(req.params.id).then(person => {
-      res.json(person)
+  app.delete('/api/persons/:id', (request, response) => {
+    Person.findByIdAndDelete(request.params.id)
+    .then(() => {
+      response.status(204).end()
+    })
+//    .catch
+//      response.status(404).end()
+  })
+
+  app.get('/api/persons/:id', (request, response) => {
+    Person.findById(request.params.id).then(person => {
+      response.json(person)
     })
   })
   

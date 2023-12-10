@@ -86,7 +86,8 @@ const App = () => {
           setNotificationMessage(null)
         }, 5000)
       })
-      .catch(() => {
+/*      .catch(() => {
+        console.log('BBBBBB')
         setErrorMessage(
           `'${person.name}' was already removed from server`
         )
@@ -94,7 +95,7 @@ const App = () => {
           setErrorMessage(null)
         }, 5000)
       setPersons(persons.filter(p => p.id !== person.id ))
-      })
+      })*/
     }
   }
 
