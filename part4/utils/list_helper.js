@@ -2,11 +2,6 @@ const dummy = (blogs) => {
     return 1
   }
   
-<<<<<<< HEAD
-=======
-
-
->>>>>>> c8850edcd03046535756eb2fa0da4fe6984f73ec
 const totalLikes = (blogs) => {
     return blogs.reduce((n, blog) => Number(n) + Number(blog.likes), 0)
   }

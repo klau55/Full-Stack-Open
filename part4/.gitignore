@@ -3,10 +3,6 @@ part4/node_modules/*
 node_modules/*
 node_modules
 /node_modules
-<<<<<<< HEAD
 **node_modules
 .env
 .gitignore
-=======
-**node_modules
->>>>>>> c8850edcd03046535756eb2fa0da4fe6984f73ec
