@@ -90,4 +90,51 @@ test('all blogs are returned', async () => {
     const ids = response.body.map(r => r.id)
     expect(ids).toBeDefined()
   })
+  test('a new blog gets added', async () => {
+    const newBlog =
+    {
+      id: "123",
+      title: "test",
+      author: "test",
+      url: "t",
+      likes: 123,
+    }
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
 
+    const response = await api.get('/api/blogs')
+    const titles = response.body.map(r => r.title)
+    expect(titles).toContain('test')
+  })
+  test('likes are defined or set to 0', async () => {
+    const newBlog =
+    {
+      id: "123",
+      title: "test",
+      author: "test",
+      url: "t",
+    }
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+
+      const response = await api.get('/api/blogs')
+      const likes = response.body.map(r => r.likes)
+      expect(likes).not.toContain(undefined)
+  })
+  test('if title or url missing get error 400', async () => {
+    const newBlog =
+    {
+      author: 'Random Author',
+      likes: 4
+    }
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
+  
