@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-
 const api = supertest(app)
+
 const Blog = require('../models/blog')
 
 const initialBlogs = [
@@ -136,5 +136,34 @@ test('all blogs are returned', async () => {
       .post('/api/blogs')
       .send(newBlog)
       .expect(400)
+  })
+  
+  test('deletion of a blog', async () => {
+    const res = await api.get('/api/blogs')
+    await api
+     .delete(`/api/blogs/${res.body.find(blog => blog.id).id}`)
+     .expect(204)
+
+     const resAfterDel = await api.get('/api/blogs')
+     expect(resAfterDel.body).toHaveLength(initialBlogs2.length - 1)
+  })
+
+  test('editing of a blog', async () => {
+    const res = await api.get('/api/blogs')
+    const initialBlog = res.body.find(blog => blog.id)
+    const changedBlog = {
+      title: initialBlog.title,
+      author: initialBlog.author,
+      url: initialBlog.url,
+      likes: 998
+    }
+
+    await api
+      .put(`/api/blogs/${initialBlog.id}`)
+      .send(changedBlog)
+      .expect(200)
+      .expect('Content-type', /application\/json/)
+
+    expect(changedBlog.likes).toBe(998)
   })
   
