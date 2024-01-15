@@ -1,7 +1,16 @@
 const blogsRouter = require('express').Router()
 const { request, response } = require('express')
 const Blog = require('../models/blog')
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
 blogsRouter.get('/',async (request, response) => {
     const blogs = await Blog.find({})
     response.json(blogs)
@@ -10,7 +19,12 @@ blogsRouter.get('/',async (request, response) => {
 blogsRouter.post('/', async (request, response, next) => {
     
     const body = request.body
-
+    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token invalid, that sucks :(' })
+    }
+    const user = await User.findById(decodedToken.id)
+ //   const user = users[0]
     try 
     {
       const blog = new Blog({
@@ -18,8 +32,11 @@ blogsRouter.post('/', async (request, response, next) => {
       author: body.author,
       url: body.url,
       likes: body.likes || 0,
+      user: user.id
     })
       const savedBlog = await blog.save()
+      user.blogs = user.blogs.concat(savedBlog.id)
+      await user.save()
       response.status(201).json(savedBlog)
     }
     catch (exception) {
@@ -38,11 +55,13 @@ blogsRouter.delete('/:id', async (request, response, next) => {
 blogsRouter.put('/:id', async (request, response, next) => {
   try {
     const body = request.body
+    const user = await User.findById(decodedToken.id)
     const blog = {
       title: body.title,
       author: body.author,
       url: body.url,
-      likes:body.likes
+      likes:body.likes,
+      user: user.id
     }
     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {new: true})
     response.json(updatedBlog)
