@@ -22,17 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.eslintrc.cjs
-vite.config.js
-package-lock.json
-part4/node_modules/*
-node_modules/*
-node_modules
-/node_modules
-**node_modules
-.gitignore
-.env
-part4/.env
-part4/.gitignore
-./node_modules
-./vite.svg
