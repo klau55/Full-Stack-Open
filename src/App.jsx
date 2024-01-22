@@ -12,6 +12,10 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newTitle, setNewTitle] = useState('')
+  const [newUrl, setNewUrl] = useState('')
+
   const handleLogin = async (event) => {
   event.preventDefault()
   
@@ -75,13 +79,16 @@ const App = () => {
   )
 
   const blogForm = () => (
-    /*<form onSubmit={addBlog}>
-      <input
-        value={newBlog}
-        onChange={handleBlogChange}
-      />*/
-    <form>
-      <button type="submit">save</button>
+    
+    <form onSubmit={addBlog}>
+      <a>Create new blog:</a>
+          <input name="title" id="title"
+            onChange={({ target }) => setNewTitle(target.value)} placeholder="title"/>
+          <input name="author" id="author"
+            onChange={({ target }) => setNewAuthor(target.value)} placeholder="author"/>
+          <input name="url" id="url"
+            onChange={({ target }) => setNewUrl(target.value)} placeholder="url"/>
+      <button type="submit">create</button>
     </form>  
   )
   const handleLogout = async (event) => {
@@ -92,8 +99,41 @@ const App = () => {
     setUsername('')
     setPassword('')
   }
+  const addBlog = async (target) => {
 
+    target.preventDefault()
+    const newBlog = {
+      title:newTitle,
+      author: newAuthor,
+      url: newUrl,
+      likes: 0,
+      user: user,
+      creator: user.name
+    }
+    try {
+      await blogService
+        .create(newBlog)
+      setBlogs(blogs.concat(newBlog))
 
+      setErrorMessage('Added new blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+    catch (exception) {
+      setErrorMessage('Error! Check entries')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+    setNewTitle('')
+    setNewAuthor('')
+    setNewUrl('')
+  }
+
+  const generateUniqueId =() => {
+    return `id-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  }
   return (
     <div>
       <h2>blogs</h2>
@@ -102,7 +142,7 @@ const App = () => {
        <p>{user.name} logged in <button onClick={handleLogout}>log out</button></p>
          {blogForm()}
             {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id || generateUniqueId()} blog={blog} />
       )}
       </div>
     } 
