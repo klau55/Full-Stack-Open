@@ -9,3 +9,4 @@ node_modules
 part4/.env
 part4/.gitignore
 ./node_modules
+./vite.svg
