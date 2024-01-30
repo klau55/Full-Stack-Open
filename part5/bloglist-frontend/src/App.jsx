@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
-
+import './index.css'
 
 
 const App = () => {
@@ -30,6 +30,10 @@ const App = () => {
     setUser(user)
     setUsername('')
     setPassword('')
+    setErrorMessage('Logged in')
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000)
   } catch (exception) {
     setErrorMessage('Wrong credentials')
     setTimeout(() => {
@@ -78,6 +82,17 @@ const App = () => {
     </form>      
   )
 
+  const Notification = ({ message }) => {
+    if (message === null) {
+      return null
+    }
+
+    return (
+      <div className="message">
+        {message}
+      </div>
+    )
+  }
   const blogForm = () => (
     
     <form onSubmit={addBlog}>
@@ -98,6 +113,10 @@ const App = () => {
     setUser(null)
     setUsername('')
     setPassword('')
+    setErrorMessage('Logged out')
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000)
   }
   const addBlog = async (target) => {
 
@@ -136,6 +155,7 @@ const App = () => {
   }
   return (
     <div>
+      <Notification message={errorMessage} />
       <h2>blogs</h2>
     {!user && loginForm()} 
     {user && <div>
