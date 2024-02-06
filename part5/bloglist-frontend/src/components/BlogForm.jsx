@@ -3,7 +3,7 @@ import blogService from '../services/blogs'
 import Blog from '../components/Blog'
 import Togglable from '../components/Togglable'
 
-const BlogForm = ({user, blogs}) => {
+const BlogForm = ({user, blogs, addBlog}) => {
     const [newAuthor, setNewAuthor] = useState('')
     const [newTitle, setNewTitle] = useState('')
     const [newUrl, setNewUrl] = useState('')
@@ -11,7 +11,7 @@ const BlogForm = ({user, blogs}) => {
     const blogFormRef = useRef()
 
 
-    const addBlog = async (target) => {
+    const forwardForm = async (target) => {
 
     target.preventDefault()
     const newBlog = {
@@ -22,25 +22,7 @@ const BlogForm = ({user, blogs}) => {
       user: user,
       creator: user.name
     }
-    try {
-      console.log('here')
-      await blogService
-        .create(newBlog)
-      setBlogs(blogs.concat(newBlog))
-
-      setErrorMessage('Added new blog')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-    catch (exception) {
-      console.log('catch')
-      setErrorMessage('Error! Check entries')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
-    console.log('here2')
+    addBlog(newBlog)
     setNewTitle('')
     setNewAuthor('')
     setNewUrl('')
@@ -50,7 +32,7 @@ const BlogForm = ({user, blogs}) => {
   return (
     <div>
     <Togglable buttonLabel="new blog" ref={blogFormRef}> 
-    <form onSubmit={addBlog} id="addBlogForm">
+    <form onSubmit={forwardForm} id="addBlogForm">
       <a>Create new blog:</a>
           <input name="title" id="title"
             onChange={({ target }) => setNewTitle(target.value)} placeholder="title"/>

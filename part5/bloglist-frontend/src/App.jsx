@@ -105,6 +105,28 @@ const App = () => {
     }, 5000)
   }
 
+  const generateUniqueId =() => {
+    return `id-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  }
+  
+  const addBlog = async (newBlog) => {
+    try {
+      await blogService
+        .create(newBlog)
+      setBlogs(blogs.concat(newBlog))
+      setErrorMessage('Added new blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+    catch (exception) {
+      setErrorMessage('Error! Check entries')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
   return (
     <div>
       <Notification message={errorMessage} />
@@ -112,7 +134,7 @@ const App = () => {
     {!user && loginForm()} 
     {user && <div>
        <p>{user.name} logged in <button onClick={handleLogout}>log out</button></p>
-         <BlogForm message={errorMessage} user={user} blogs={blogs} />
+         <BlogForm message={errorMessage} user={user} blogs={blogs} addBlog={addBlog}/>
         {blogs.map(blog =>
         <Blog key={blog.id || generateUniqueId()} blog={blog} />
          )}
