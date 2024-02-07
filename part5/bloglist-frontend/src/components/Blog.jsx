@@ -12,16 +12,24 @@ const blogStyle = {
 }
 
 
-const Blog = ({ blog }) => {
 
+const Blog = ({ blog, likeBlog, user, deleteBlogs }) => {
+  const deleteBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      await blogService
+      .remove(blog.id)
+      deleteBlogs(blog.id)
+    }
+  }
   return (
 
 <div style={blogStyle}>
   <p>{blog.title} by {blog.author}</p>
   <Togglable buttonLabel="view" buttonLabel2="hide">
     <p>url: {blog.url}</p>
-    <p>likes: {blog.likes} <button>like</button></p>
-    <p>creator: {blog.user.name}</p>
+    <p>likes: {blog.likes} <button onClick={() => likeBlog(blog)}>like</button></p>
+    <p>creator: {blog.creator ? blog.creator : blog.user[0].name}</p>
+    {user || user.username === blog.creator ? <button onClick={() => deleteBlog(blog)}>delete</button> : null}
   </Togglable>
 </div>  
 )
