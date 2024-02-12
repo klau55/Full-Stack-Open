@@ -7,11 +7,10 @@ const BlogForm = ({user, blogs, addBlog}) => {
     const [newAuthor, setNewAuthor] = useState('')
     const [newTitle, setNewTitle] = useState('')
     const [newUrl, setNewUrl] = useState('')
-    const [errorMessage, setErrorMessage] = useState(null)
     const blogFormRef = useRef()
 
 
-    const forwardForm = async (target) => {
+    const blogToAdd = async (target) => {
 
     target.preventDefault()
     const newBlog = {
@@ -32,7 +31,7 @@ const BlogForm = ({user, blogs, addBlog}) => {
   return (
     <div>
     <Togglable buttonLabel="new blog" ref={blogFormRef}> 
-    <form onSubmit={forwardForm} id="addBlogForm">
+    <form onSubmit={blogToAdd} id="addBlogForm">
       <a>Create new blog:</a>
           <input name="title" id="title"
             onChange={({ target }) => setNewTitle(target.value)} placeholder="title"/>

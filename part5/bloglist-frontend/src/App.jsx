@@ -127,15 +127,16 @@ const App = () => {
     }
   }
 
-  const likeBlog = async (blog) => {
+  const likeBlog = async ({blog}) => {
     const updatedBlog = { ...blog, likes: blog.likes + 1
     }
     await blogService
       .update(blog.id, updatedBlog)
-    setBlogs(blogs.map(b => b.id !== blog.id ? b : updatedBlog))
+    const blogsCopy = blogs.map(b => b.id !== updatedBlog.id ? b : updatedBlog)
+    setBlogs(blogsCopy)
   }
 
-  const deleteBlogs = (id) => {
+  const deleteBlog = (id) => {
     var blogsCopy = [...blogs.filter(b => b.id !== id)]
     setBlogs(blogsCopy)
   }
@@ -151,7 +152,7 @@ const App = () => {
        <p>{user.name} logged in <button onClick={handleLogout}>log out</button></p>
          <BlogForm message={errorMessage} user={user} blogs={blogs} addBlog={addBlog}/>
         {sortedBlogs.map(blog =>
-        <Blog key={blog.id || generateUniqueId()} blog={blog} likeBlog={likeBlog} user={user} deleteBlogs={deleteBlogs}/>
+        <Blog key={blog.id || generateUniqueId()} blog={blog} likeBlog={likeBlog} user={user} deleteBlog={deleteBlog}/>
          )}
       </div>
       
