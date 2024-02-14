@@ -34,7 +34,7 @@ const Blog = ({ blog, likeBlog, user, deleteBlog }) => {
     <p>url: {blog.url}</p>
     <p>likes: {blog.likes} <button id="like-button" aria-label='like' onClick={() => likeBlog(blog)}>like</button></p>
     <p>creator: {blog.creator ? blog.creator : blog.user[0].name}</p>
-    {user || user.username === blog.creator ? <button onClick={() => blogToDelete(blog)}>delete</button> : null}
+    {user.username === blog.creator ? <button onClick={() => blogToDelete(blog)}>delete</button> : null}
   </Togglable>
 </div>  
 )

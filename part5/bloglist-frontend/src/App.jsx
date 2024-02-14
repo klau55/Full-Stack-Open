@@ -15,7 +15,6 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
 
   useEffect(() => {
-    console.log('effect')
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )
@@ -121,9 +120,10 @@ const App = () => {
   
   const addBlog = async (newBlog) => {
     try {
-      await blogService
-        .create(newBlog)
-      setBlogs((prevBlogs) => [...prevBlogs, newBlog])
+      await blogService.create(newBlog)
+
+      const updatedBlogs = await blogService.getAll()
+      setBlogs( updatedBlogs )
       setErrorMessage('Added new blog')
       setTimeout(() => {
         setErrorMessage(null)
@@ -141,10 +141,7 @@ const App = () => {
     const likedBlog = { ...blog, likes: blog.likes + 1 }
     const updatedBlog = await blogService
       .update(blog.id, likedBlog)
-    console.log('updatedBlog', updatedBlog)
-    console.log('blogs rn', blogs)
     setBlogs(blogs.map(blog => blog.id !== updatedBlog.id ? blog : updatedBlog))
-    console.log('blogs after', blogs)
   }
 
   const deleteBlog = (id) => {
