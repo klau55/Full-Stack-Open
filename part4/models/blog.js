@@ -17,7 +17,8 @@ const blogSchema = new mongoose.Schema({
       ref: 'User'
     }
     ],
-    creator: String
+    creator: String,
+    id: String
   })
 
   blogSchema.set('toJSON', {

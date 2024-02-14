@@ -24,7 +24,6 @@ blogsRouter.post('/', async (request, response, next) => {
       return response.status(401).json({ error: 'token invalid, that sucks :(' })
     }
     const user = await User.findById(decodedToken.id)
- //   const user = users[0]
     try 
     {
       const blog = new Blog({
@@ -33,7 +32,8 @@ blogsRouter.post('/', async (request, response, next) => {
       url: body.url,
       likes: body.likes || 0,
       user: user.id,
-      creator: user.username
+      creator: user.username,
+      id: body.id
     })
       const savedBlog = await blog.save()
       user.blogs = user.blogs.concat(savedBlog.id)
@@ -60,8 +60,12 @@ blogsRouter.put('/:id', async (request, response, next) => {
   try{
     const body = request.body
     const blog = {
-    likes: body.likes
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
     }
+    console.log(body)
     const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {new: true})
     response.json(updatedBlog) 
   } catch(exception) {

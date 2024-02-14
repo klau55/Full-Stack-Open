@@ -14,7 +14,7 @@ const BlogForm = ({user, blogs, addBlog}) => {
 
     target.preventDefault()
     const newBlog = {
-      title:newTitle,
+      title: newTitle,
       author: newAuthor,
       url: newUrl,
       likes: 0,
@@ -39,7 +39,7 @@ const BlogForm = ({user, blogs, addBlog}) => {
             onChange={({ target }) => setNewAuthor(target.value)} placeholder="author"/>
           <input name="url" id="url"
             onChange={({ target }) => setNewUrl(target.value)} placeholder="url"/>
-      <button type="submit">create</button>
+      <button type="submit" id="submit-button">create</button>
     </form>  
     </Togglable>
   </div>

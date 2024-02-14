@@ -15,11 +15,21 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
 
   useEffect(() => {
-    blogService.getAll()
-    .then(blogs =>
+    console.log('effect')
+    blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
 
   const handleLogin = async (event) => {
   event.preventDefault()
@@ -61,7 +71,7 @@ const App = () => {
     <form onSubmit={handleLogin}>
       <div>
         username
-          <input
+          <input id='username'
           type="text"
           value={username}
           name="Username"
@@ -70,14 +80,14 @@ const App = () => {
       </div>
       <div>
         password
-          <input
+          <input id='password'
           type="password"
           value={password}
           name="Password"
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button type="submit">login</button>
+      <button id="login-button" type="submit">login</button>
     </form>      
   )
 
@@ -113,7 +123,7 @@ const App = () => {
     try {
       await blogService
         .create(newBlog)
-      setBlogs(blogs.concat(newBlog))
+      setBlogs((prevBlogs) => [...prevBlogs, newBlog])
       setErrorMessage('Added new blog')
       setTimeout(() => {
         setErrorMessage(null)
@@ -127,13 +137,14 @@ const App = () => {
     }
   }
 
-  const likeBlog = async ({blog}) => {
-    const updatedBlog = { ...blog, likes: blog.likes + 1
-    }
-    await blogService
-      .update(blog.id, updatedBlog)
-    const blogsCopy = blogs.map(b => b.id !== updatedBlog.id ? b : updatedBlog)
-    setBlogs(blogsCopy)
+  const likeBlog = async (blog) => {
+    const likedBlog = { ...blog, likes: blog.likes + 1 }
+    const updatedBlog = await blogService
+      .update(blog.id, likedBlog)
+    console.log('updatedBlog', updatedBlog)
+    console.log('blogs rn', blogs)
+    setBlogs(blogs.map(blog => blog.id !== updatedBlog.id ? blog : updatedBlog))
+    console.log('blogs after', blogs)
   }
 
   const deleteBlog = (id) => {
@@ -142,11 +153,12 @@ const App = () => {
   }
 
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+
   
   return (
     <div>
       <Notification message={errorMessage} />
-      <h2>blogs</h2>
+      <h2>Blogs</h2>
     {!user && loginForm()} 
     {user && <div>
        <p>{user.name} logged in <button onClick={handleLogout}>log out</button></p>
