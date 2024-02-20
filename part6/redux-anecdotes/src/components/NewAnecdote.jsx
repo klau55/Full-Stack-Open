@@ -1,16 +1,17 @@
 import { useDispatch } from "react-redux"
+import anecdoteService from "../services/anecdotes"
 
 const NewAnecdote = () => {
   const dispatch = useDispatch()
 
-  const addAnecdote = (event) => {
+  const addAnecdote = async (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    //dispatch(createAnecdote(content))
+    const NewAnecdote = await anecdoteService.createNew(content)
     dispatch({
       type: "anecdotes/create",
-      payload: content
+      payload: NewAnecdote
     })
     dispatch({
       type: "notification/setNotification",
