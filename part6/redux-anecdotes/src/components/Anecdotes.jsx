@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux"
-import { addVote } from "../reducers/anecdoteReducer"
 import Filter from "./Filter"
+import Notification from "./Notification"
 
 const Anecdote = ({anecdote, handleClick}) => {
     return (
@@ -9,7 +9,7 @@ const Anecdote = ({anecdote, handleClick}) => {
                 {anecdote.content}
             </div>
             <div>
-                has {anecdote.votes}
+                has {anecdote.votes} votes
                 <button onClick={handleClick}>vote</button>
             </div>
         </div>
@@ -21,6 +21,7 @@ const Anecdotes = () => {
     const anecdotes =  useSelector(({filter, anecdotes}) => {
         if (filter === "") {
             return anecdotes
+            .map(anecdote => anecdote)
             .sort((a, b) => b.votes - a.votes)
         }
         else {
@@ -30,17 +31,36 @@ const Anecdotes = () => {
         }        
     }   
     )
+    const voteAnecdote = (anecdote) => {
+        dispatch({
+            type: "anecdotes/vote",
+            payload: anecdote.id 
+        })
+        dispatch({
+            type: "notification/setNotification",
+            payload: `you voted for '${anecdote.content}'`
+        })
+        setTimeout(() => {
+            dispatch({ 
+              type: 'notification/setNotification', 
+              payload: null
+            })
+          }, 5000)
+
+
+    }
     return (
         <div>
-        <h2>Anecdotes</h2>
-        <Filter />
-        {anecdotes.map(anecdote =>
-            <Anecdote 
-                key={anecdote.id}
-                anecdote={anecdote}
-                handleClick={() => dispatch(addVote(anecdote.id))}
-            />
-        )}
+            <h2>Anecdotes</h2>
+            <Notification />
+            <Filter />
+            {anecdotes.map(anecdote =>
+                <Anecdote 
+                    key={anecdote.id}
+                    anecdote={anecdote}
+                    handleClick={() => voteAnecdote(anecdote)}
+                />
+            )}
         </div>
     )
 }
