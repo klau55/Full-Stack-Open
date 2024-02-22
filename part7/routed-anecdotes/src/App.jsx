@@ -17,9 +17,22 @@ const Menu = () => {
   }
   return (
     <div>
-      <a href='#' style={padding}>anecdotes</a>
-      <a href='#' style={padding}>create new</a>
-      <a href='#' style={padding}>about</a>
+      <Link style={padding} to="/">anecdotes</Link>
+      <Link style={padding} to="/create">create new</Link>
+      <Link style={padding} to="/about">about</Link>
+    </div>
+  )
+}
+
+const Anecdote = ({ anecdotes }) => {
+  const anecdoteId = useParams().id
+  const anecdote = anecdotes.find(a => a.id === Number(anecdoteId))
+  return (
+    <div>
+      <h2>{anecdote.content} by {anecdote.author}</h2>
+      <div>has {anecdote.votes} votes</div>
+      <div>for more info see <a href={anecdote.info}>{anecdote.info}</a></div>
+      <br />
     </div>
   )
 }
@@ -28,10 +41,28 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => <li key={anecdote.id}>
+        <Link 
+          to={`/anecdotes/${anecdote.id}`} >{anecdote.content}
+        </Link></li>)}
     </ul>
   </div>
 )
+
+const Notification = ({ notification }) => {
+  const style = {
+    border: 'solid',
+    padding: 10,
+    borderWidth: 1
+  }
+  if (notification === '') return null
+
+  return (
+    <div style={style}>
+      {notification}
+    </div>
+  )
+}
 
 const About = () => (
   <div>
@@ -59,6 +90,7 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  const navigate = useNavigate()
 
 
   const handleSubmit = (e) => {
@@ -72,6 +104,7 @@ const CreateNew = (props) => {
     setContent('')
     setAuthor('')
     setInfo('')
+    navigate('/')
   }
 
   return (
@@ -114,15 +147,16 @@ const App = () => {
       id: 2
     }
   ])
-  const padding = {
-    paddingRight: 5
-  }
 
   const [notification, setNotification] = useState('')
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`a new anecdote ${anecdote.content} created!`)
+    setTimeout(() => {
+      setNotification('')
+    }, 5000)
   }
 
   const anecdoteById = (id) =>
@@ -144,11 +178,11 @@ const App = () => {
       <h1>Software anecdotes</h1>
       <Router>
       <div>
-      <Link style={padding} to="/">anecdotes</Link>
-      <Link style={padding} to="/create">create new</Link>
-      <Link style={padding} to="/about">about</Link>
+        <Menu />
       </div>
+      <Notification notification={notification} />
       <Routes>
+        <Route path="/anecdotes/:id" element={<Anecdote anecdotes={anecdotes} />} />
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path="/about" element={<About />} />
         <Route path="/create" element={<CreateNew addNew={addNew} />} />
