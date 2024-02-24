@@ -53,6 +53,19 @@ const calculateExercises = (dailyHours: number[], target: number): Result => {
         average: average
     };
 };
-
-
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+const parseArgs = (args: Array<string>): Array<number> => {
+    if (args.length < 4) throw new Error('Not enough arguments');
+    const nums = args.slice(3).map(a => Number(a));
+    if (nums.some(a => isNaN(a))) throw new Error('Provided values were not numbers!');
+    return nums;
+};
+try {
+    const args = parseArgs(process.argv);
+    console.log(calculateExercises(args, Number(process.argv[2])));
+} catch (error: unknown) {
+    let errorMessage = 'Somethin wron: ';
+    if (error instanceof Error) {
+        errorMessage += error.message;
+    }
+    console.log(errorMessage);
+}
