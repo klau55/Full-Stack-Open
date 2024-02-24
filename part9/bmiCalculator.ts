@@ -2,7 +2,7 @@ const calculateBmi = (a:number, b:number):string => {
     if (a < 100 || a > 250) return('*\n*\n\n⪩⪨  u too shmol or too big for this world :(    ༊*·˚ *ੈ\n\n*\n*\n');
     if (b < 30 || b > 200) return('*\n*\n\n⪩⪨   u too shmol or too big for this world :[    ༊*·˚ *ੈ\n\n*\n*\n');
     const res = b / ((a / 100) * (a / 100));
-    var cat: string = null;
+    var cat: string = '';
     if (res < 16)
         cat = 'Underweight (Severe thinness)';
     else if  (res > 16 && res < 17)
@@ -24,3 +24,5 @@ return (`*\n*\n\n ༊*·˚ *ੈ    your category is ${cat}    ✩‧₊˚ ˚ ༘
 const a = Number(process.argv[2]);
 const b = Number(process.argv[3]);
 console.log(calculateBmi(a, b))
+
+export default calculateBmi;
