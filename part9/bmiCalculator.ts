@@ -19,6 +19,7 @@ const calculateBmi = (a:number, b:number):string => {
         cat = 'Obese (Class II)';
     else if (res >= 40)
         cat = 'Obese (Class III)';
+    else return ('error');
 return (`*\n*\n\n ༊*·˚ *ੈ    your category is ${cat}    ✩‧₊˚ ˚ ༘♡ ⋆｡˚\n\n*\n*\n`)
 }
 const a = Number(process.argv[2]);
