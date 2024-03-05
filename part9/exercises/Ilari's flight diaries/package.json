@@ -1,5 +1,5 @@
 {
-  "name": "project",
+  "name": "asd",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,12 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "dev": "ts-node-dev index.ts",
-    "lint": "eslint --ext .ts ."
+    "lint": "eslint --ext .ts .",
+    "start": "node build/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.18.2"
   },
   "devDependencies": {
