@@ -1,6 +1,7 @@
 import express from 'express';
 import diagnosesService from './services/diagnosesService';
 import patientsService from './services/patientsService';
+import toNewPatientEntry from './services/utils';
 var cors = require('cors');
 
 const app = express();
@@ -18,11 +19,18 @@ app.get('/api/patients', (_req, res) => {
 });
 
 app.post('/api/patients', (req, res) => {
-  const { name, dateOfBirth, gender, ssn , occupation} = req.body;
-  const newPatient = patientsService.addPatient(name, dateOfBirth, gender, ssn, occupation);
-  res.json(newPatient);
-}
-);
+  try{
+    const newPatientEntry = toNewPatientEntry(req.body);
+    const addedEntry = patientsService.addPatient(newPatientEntry);
+    res.json(addedEntry);
+  } catch (error: unknown) {
+    let errorMessage = 'Something went wrong';
+    if (error instanceof Error) {
+      errorMessage += 'Error: ' + error.message;
+    }
+    res.status(400).send(errorMessage);
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
