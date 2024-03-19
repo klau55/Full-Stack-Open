@@ -35,8 +35,8 @@ const App = () => {
 
   return (
     <div>
-      <h1>Ilari's flight diaries</h1>
-      <h2>create new</h2>
+      <h2>Ilari's flight diaries</h2>
+      <h2>Add new entry</h2>
       <form onSubmit={diaryCreation}>
         <div>
           date
@@ -68,14 +68,19 @@ const App = () => {
         </div>
         <button type="submit">add</button>
       </form>
-      <h2>diaries</h2>
+      <h2>Diary entries</h2>
       <div>
         {diaries.map((diary, i) => (
           <div key={i}>
             {diary.date}<br />
             visibility: {diary.visibility}<br />
             weather: {diary.weather} <br />
-            comment: {diary.comment} <br />
+            {diary.comment && (
+              <>
+                comment: {diary.comment} <br />
+                <br />
+              </>
+            )}
             <br />
           </div>
         ))}
