@@ -30,7 +30,9 @@ const DiaryForm = ({addDiary}: AppProps) => {
     };
 
     return (
+        
         <form onSubmit={diaryCreation}>
+            <h2>Add new entry</h2>
             <p>
                 <label>
                     date <input type='date' name='myDate' value={date} onChange={(e) => setDate(e.target.value)} />

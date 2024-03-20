@@ -37,11 +37,9 @@ const App = () => {
 
   return (
     <div>
-      <h2>Ilari's flight diaries</h2>
+      <h1>Ilari's flight diaries</h1>
       {errorMessage && <h3 style={{color: 'red'}}>{errorMessage}</h3>}
-      <h2>Add new entry</h2>
       <DiaryForm addDiary={addDiary}/>
-      <h2>Diary entries</h2>
       <Diaries diaries={diaries} />
     </div>
   );
