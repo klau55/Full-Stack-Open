@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { DiaryEntry } from './types';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { DiaryEntry, NewDiaryEntry } from './types';
+import axios, {AxiosError} from 'axios';
+import DiaryForm from './components/DiaryForm';
+import diaryService from './services/diaryService';
+import Diaries from './components/Diaries';
 
 const App = () => {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
-  const [date, setDate] = useState('');
-  const [visibility, setVisibility] = useState('');
-  const [weather, setWeather] = useState('');
-  const [comment, setComment] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:3000/api/diaries').then(response => {
@@ -15,76 +15,34 @@ const App = () => {
     });
   }, []);
 
+  const setNotification = (message: string) => {
+    setErrorMessage(message);
+    setTimeout(() => {
+      setErrorMessage('');
+    }, 5000);
+  }
 
-  const diaryCreation = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-    const diaryObject = {
-      date: date,
-      visibility: visibility,
-      weather: weather,
-      comment: comment
-    };
-    axios.post('http://localhost:3000/api/diaries', diaryObject).then(response => {
-      setDiaries(diaries.concat(response.data as DiaryEntry));
+  const addDiary = (diary: NewDiaryEntry) => {
+    diaryService.create(diary).then(returnedDiary => {
+      setDiaries(diaries.concat(returnedDiary));
+    }
+    ).catch((error: AxiosError) => {
+      if (error.response) {
+        setNotification(String(error.response.data));
+      } else {
+        setNotification(error.message);
+      }
     });
-    setDate('');
-    setVisibility('');
-    setWeather('');
-    setComment('');
-  };
+  }
 
   return (
     <div>
       <h2>Ilari's flight diaries</h2>
+      {errorMessage && <h3 style={{color: 'red'}}>{errorMessage}</h3>}
       <h2>Add new entry</h2>
-      <form onSubmit={diaryCreation}>
-        <div>
-          date
-          <input
-            value={date}
-            onChange={({ target }) => setDate(target.value)}
-          />
-        </div>
-        <div>
-          visibility
-          <input
-            value={visibility}
-            onChange={({ target }) => setVisibility(target.value)}
-          />
-        </div>
-        <div>
-          weather
-          <input
-            value={weather}
-            onChange={({ target }) => setWeather(target.value)}
-          />
-        </div>
-        <div>
-          comment
-          <input
-            value={comment}
-            onChange={({ target }) => setComment(target.value)}
-          />
-        </div>
-        <button type="submit">add</button>
-      </form>
+      <DiaryForm addDiary={addDiary}/>
       <h2>Diary entries</h2>
-      <div>
-        {diaries.map((diary, i) => (
-          <div key={i}>
-            {diary.date}<br />
-            visibility: {diary.visibility}<br />
-            weather: {diary.weather} <br />
-            {diary.comment && (
-              <>
-                comment: {diary.comment} <br />
-                <br />
-              </>
-            )}
-            <br />
-          </div>
-        ))}
-      </div>
+      <Diaries diaries={diaries} />
     </div>
   );
 };
