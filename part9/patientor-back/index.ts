@@ -18,6 +18,15 @@ app.get('/api/patients', (_req, res) => {
   res.send(patientsService.getNonSensitivePatients())
 });
 
+app.get('/api/patients/:id', (req, res) => {
+  const patient = patientsService.getPatient(req.params.id);
+  if (patient) {
+    res.send(patient);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 app.post('/api/patients', (req, res) => {
   try{
     const newPatientEntry = toNewPatientEntry(req.body);
