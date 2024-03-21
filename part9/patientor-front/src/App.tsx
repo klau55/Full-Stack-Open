@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { Button, Divider, Container, Typography } from '@mui/material';
 
 import { Patient } from "./types";
-
+import SinglePatientInfo from "./components/SinglePatientInfo";
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
 
@@ -37,6 +37,7 @@ const App = () => {
               setPatients={setPatients} 
               />}
             />
+            <Route path="/:id" element={<SinglePatientInfo />} />
           </Routes>
         </Container>
       </Router>
