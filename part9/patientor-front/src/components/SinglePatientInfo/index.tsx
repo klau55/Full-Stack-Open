@@ -6,12 +6,15 @@ import {
     CardHeader,
   } from "@mui/material"
   import { useParams } from "react-router-dom"
-  import { Patient, Diagnosis } from "../../types"
+  import { Patient, Diagnosis, Props, assertNever } from "../../types"
   import FemaleIcon from "@mui/icons-material/Female"
   import MaleIcon from "@mui/icons-material/Male"
   import { useState, useEffect } from "react"
   import patientService from "../../services/patients"
   import diagnosesService from "../../services/diagnoses"
+  import HospitalEntry from "./Hospital"
+  import HealthCheckEntry from "./HealthCheck"
+  import OccupationalHealthcareEntry from "./OccupationalHealthcare"
   
   const SinglePatientInfo = () => {
     const { id } = useParams<{ id: string }>()
@@ -39,6 +42,19 @@ import {
       }
       void fetchDiagnoses()
     }, [id])
+
+    const EntryDetails = ({ entry, diagnoses }: Props) => {
+      switch (entry.type) {
+        case "Hospital":
+          return <HospitalEntry entry={entry} diagnoses={diagnoses}/>;
+        case "HealthCheck":
+          return <HealthCheckEntry entry={entry} diagnoses={diagnoses}/>;
+        case "OccupationalHealthcare":
+          return <OccupationalHealthcareEntry entry={entry} diagnoses={diagnoses}/>;
+        default:
+          return assertNever(entry);
+      }
+    };
   
     return (
       <Container>
@@ -67,23 +83,10 @@ import {
           </Card>
         )}
         <h3>entries</h3>
-        {patient?.entries.map((entry) => (
-          <Card key={entry.id}>
-            <CardContent>
-              <Typography variant="body2">{entry.date} {entry.description}</Typography>
-              <ul>
-                {entry.diagnosisCodes?.map((code) => {
-                  return (
-                    <li key={code}>
-                      {code}{" "}
-                      {diagnoses &&
-                        diagnoses.map((d) => (d.code === code ? d.name : null))}
-                    </li>
-                  );
-                })}
-              </ul>
-            </CardContent>
-          </Card>
+        { diagnoses && patient?.entries.map((entry, i) => (
+          <div key={i}>
+            {<EntryDetails entry={entry} diagnoses={diagnoses} />}
+          </div>
         ))}
       </Container>
     )
