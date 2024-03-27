@@ -10,16 +10,16 @@ import {
   import FemaleIcon from "@mui/icons-material/Female"
   import MaleIcon from "@mui/icons-material/Male"
   import { useState, useEffect } from "react"
-  import patinetService from "../../services/patients"
+  import patientService from "../../services/patients"
   
   const SinglePatientInfo = () => {
     const { id } = useParams<{ id: string }>()
-    const [patient, setPatient] = useState<Patient | undefined>()
+    const [patient, setPatient] = useState<Patient>()
   
     useEffect(() => {
       const fetchPatient = async (id: string) => {
         try {
-          const patient = await patinetService.getOne(id)
+          const patient = await patientService.getOne(id as string)
           setPatient(patient)
         } catch (err) {
           console.error(err)
@@ -54,6 +54,19 @@ import {
             </CardContent>
           </Card>
         )}
+        <h3>entries</h3>
+        {patient?.entries.map((entry) => (
+          <Card key={entry.id}>
+            <CardContent>
+              <Typography variant="body2">{entry.date} {entry.description}</Typography>
+              <ul>
+                {entry.diagnosisCodes?.map((code) => (
+                  <li key={code}>{code}</li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        ))}
       </Container>
     )
   }
