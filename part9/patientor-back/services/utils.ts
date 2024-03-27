@@ -1,10 +1,10 @@
-import { NewPatient } from './types';
+import { NewPatient, Entry } from './types';
 
 const toNewPatientEntry = (object: unknown): NewPatient => {
     if (!object || typeof object !== 'object') {
         throw new Error('Incorrect or missing data: ' + object);
     }
-    if ('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object)
+    if ('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object && 'entries' in object)
     {
 
         const newPatient: NewPatient = {
@@ -13,7 +13,7 @@ const toNewPatientEntry = (object: unknown): NewPatient => {
             ssn: parseSSN(object.ssn),
             gender: parseGender(object.gender),
             occupation: parseOccupation(object.occupation),
-            entries: []
+            entries: parseEntries(object.entries)
         };
         return newPatient;
     }
@@ -65,3 +65,9 @@ const parseOccupation = (occupation: unknown): string => {
     }
     return occupation;
 }
+const parseEntries = (entries: unknown): Entry[] => {
+    if (!entries) {
+      throw new Error('Missing entries');  
+    }; 
+    return entries as Entry[];
+  }
