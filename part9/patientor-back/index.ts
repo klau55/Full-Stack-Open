@@ -1,7 +1,7 @@
 import express from 'express';
 import diagnosesService from './services/diagnosesService';
 import patientsService from './services/patientsService';
-import toNewPatientEntry from './services/utils';
+import { toNewPatientEntry, toNewEntry}  from './services/utils';
 var cors = require('cors');
 
 const app = express();
@@ -32,6 +32,24 @@ app.post('/api/patients', (req, res) => {
     const newPatientEntry = toNewPatientEntry(req.body);
     const addedEntry = patientsService.addPatient(newPatientEntry);
     res.json(addedEntry);
+  } catch (error: unknown) {
+    let errorMessage = 'Something went wrong';
+    if (error instanceof Error) {
+      errorMessage += 'Error: ' + error.message;
+    }
+    res.status(400).send(errorMessage);
+  }
+});
+app.post('/api/patients/:id/entries', (req, res) => {
+  try{
+    const newEntry = toNewEntry(req.body);
+    const patientId = req.params.id;
+    if (patientId) {
+      const updatedPatient = patientsService.addEntry(newEntry, patientId);
+      res.json(updatedPatient);
+    } else {
+      res.sendStatus(404);
+    }
   } catch (error: unknown) {
     let errorMessage = 'Something went wrong';
     if (error instanceof Error) {

@@ -64,3 +64,26 @@ interface OccupationalHealthcareEntry extends BaseEntry {
     endDate: string;
     };
 }
+
+export type NewHospitalEntryType = Omit<HospitalEntry, "id">
+
+export type NewOccupationalHealthcareEntryType = Omit<OccupationalHealthcareEntry, "id">
+
+export type NewHealthCheckEntryType = Omit<HealthCheckEntry, "id">
+
+export interface SickLeave {
+    startDate: string;
+    endDate: string;
+  }
+export interface Discharge {
+    date: string;
+    criteria: string;
+}
+interface HospitalEntry extends BaseEntry {
+    type: 'Hospital';
+    discharge: Discharge;
+  }
+
+  type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+  export type EntryWithoutId = UnionOmit<Entry, 'id'>;
+  export type BaseEntryWithoutId = UnionOmit<BaseEntry, 'id'>;
